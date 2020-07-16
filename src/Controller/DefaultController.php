@@ -69,7 +69,7 @@ class DefaultController extends AbstractController
     {
         $query = null;
         while([] !== $query) {
-            $uniqueName = !bin2hex(random_bytes(64));
+            $uniqueName = bin2hex(random_bytes(64));
             $query = $this->getDoctrine()
                 ->getRepository(File::class)
                 ->findBy(['name' => $uniqueName]);
