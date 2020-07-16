@@ -22,7 +22,7 @@ class FileUploader
 
         $file = (new File())
             ->setOriginalName($this->getFile()->getClientOriginalName())
-            ->setName(bin2hex(random_bytes(64)).'.'.$this->getFile()->guessClientExtension())
+            ->setName($this->getServerName().'.'.$this->getFile()->guessClientExtension())
             ->setUploadedPath($this->getDirectory())
             ->setUploadedAt(new \DateTime("now", new \DateTimeZone("UTC")));
 
