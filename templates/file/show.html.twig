@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}File info{% endblock %}
+
+{% block body %}
+    {{ file.originalName }}
+    {{ fileStorage.size }}
+    <a href="/file/{{ file.id }}/download">Download</a>
+{% endblock %}

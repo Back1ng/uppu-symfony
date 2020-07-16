@@ -47,4 +47,13 @@ class FileRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findLastFiles()
+    {
+        return $this->createQueryBuilder('f')
+            ->orderBy('f.id', 'DESC')
+            ->setMaxResults(100)
+            ->getQuery()
+            ->execute();
+    }
 }

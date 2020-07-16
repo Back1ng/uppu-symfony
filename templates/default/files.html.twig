@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Last Files{% endblock %}
+
+{% block body %}
+    {% for file in files %}
+        {{ file.originalName }} <a href="/file/{{ file.id }}">Show</a><br>
+    {% endfor %}
+{% endblock %}
