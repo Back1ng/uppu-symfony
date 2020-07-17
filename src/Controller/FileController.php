@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\File;
 use App\Form\FileType;
 use App\Service\FileUploader;
+use App\Service\Writer\SizeWriter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
@@ -43,7 +44,7 @@ class FileController extends AbstractController
             }
         }
 
-        return $this->render('default/index.html.twig', [
+        return $this->render('file/index.html.twig', [
             'form' => $form->createView()
         ]);
     }
@@ -57,7 +58,7 @@ class FileController extends AbstractController
             ->getRepository(File::class)
             ->findLastFiles();
 
-        return $this->render('default/files.html.twig', [
+        return $this->render('file/files.html.twig', [
             'files' => $files
         ]);
     }
@@ -78,6 +79,7 @@ class FileController extends AbstractController
                 return $this->render('file/show.html.twig', [
                     'file' => $fileEntity,
                     'fileStorage' => $file,
+                    'size' => (new SizeWriter($file->getSize()))->write()
                 ]);
             }
         }

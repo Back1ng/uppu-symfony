@@ -5,7 +5,7 @@
 {% block body %}
     {% for file in files %}
         <div class="card my-4 mx-auto w-50 text-center">
-            {% include 'file/file_info.html.twig' %}
+{#            {% include 'file/file_info.html.twig' %}#}
             <div class="card-body">
                 <h5 class="card-title">{{ file.originalName }}</h5>
                 <a href="/file/{{ file.id }}" class="btn btn-primary">Show</a>
