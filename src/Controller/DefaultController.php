@@ -20,16 +20,4 @@ class DefaultController extends AbstractController
             'files' => $files
         ]);
     }
-
-    private function generateUniqueName() : string
-    {
-        $query = null;
-        while([] !== $query) {
-            $uniqueName = bin2hex(random_bytes(64));
-            $query = $this->getDoctrine()
-                ->getRepository(File::class)
-                ->findBy(['name' => $uniqueName]);
-        }
-        return $uniqueName;
-    }
 }
