@@ -4,6 +4,12 @@
 
 {% block body %}
     {% for file in files %}
-        {{ file.originalName }} <a href="/file/{{ file.id }}">Show</a><br>
+        <div class="card my-4 mx-auto w-50 text-center">
+            {% include 'file/file_info.html.twig' %}
+            <div class="card-body">
+                <h5 class="card-title">{{ file.originalName }}</h5>
+                <a href="/file/{{ file.id }}" class="btn btn-primary">Show</a>
+            </div>
+        </div>
     {% endfor %}
 {% endblock %}

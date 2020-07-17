@@ -37,6 +37,11 @@ class File
      */
     private $uploaded_at;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $mime_type;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -86,6 +91,18 @@ class File
     public function setUploadedAt(\DateTimeInterface $uploaded_at): self
     {
         $this->uploaded_at = $uploaded_at;
+
+        return $this;
+    }
+
+    public function getMimeType(): ?string
+    {
+        return $this->mime_type;
+    }
+
+    public function setMimeType(string $mime_type): self
+    {
+        $this->mime_type = $mime_type;
 
         return $this;
     }

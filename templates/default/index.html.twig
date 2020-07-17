@@ -3,5 +3,16 @@
 {% block title %}Last Files{% endblock %}
 
 {% block body %}
-    {{ form(form) }}
+    <div class="bg-light mt-3 p-4 d-flex justify-content-center text-center">
+        {{ form_start(form) }}
+            {% if form.vars.errors|length %}
+                <div class="alert alert-danger">
+                    {{ form_errors(form) }}
+                </div>
+            {% endif %}
+
+            {{ form_row(form.file) }}
+            {{ form_row(form.submit) }}
+        {{ form_end(form) }}
+    </div>
 {% endblock %}

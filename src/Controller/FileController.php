@@ -41,4 +41,16 @@ class FileController extends AbstractController
 
         return $this->file($fileEntity->getUploadedPath().'/'.$fileEntity->getName(), $fileEntity->getOriginalName());
     }
+
+    /**
+     * @Route("/file/{id}/content", name="file-get-content")
+     */
+    public function content($id)
+    {
+        $file = $this->getDoctrine()->getRepository(File::class)->find($id);
+
+        return new Response(file_get_contents($file->getUploadedPath().'/'.$file->getName()), 200, [
+            'Content-type' => $file->getMimeType()
+        ]);
+    }
 }

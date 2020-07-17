@@ -13,7 +13,10 @@ class FileType extends AbstractType
     {
         $builder
             ->add("file", File::class, [
-                'attr' => ['class' => 'form-control-file m-1']
+                'attr' => [
+                    'class' => 'form-control-file m-1',
+                ],
+                'label' => false,
             ])
             ->add("submit", SubmitType::class, [
                 'attr' => ['class' => 'btn btn-primary m-1']

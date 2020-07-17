@@ -24,7 +24,8 @@ class FileUploader
             ->setOriginalName($this->getFile()->getClientOriginalName())
             ->setName($this->getServerName().'.'.$this->getFile()->guessClientExtension())
             ->setUploadedPath($this->getDirectory())
-            ->setUploadedAt(new \DateTime("now", new \DateTimeZone("UTC")));
+            ->setUploadedAt(new \DateTime("now", new \DateTimeZone("UTC")))
+            ->setMimeType($this->getFile()->getClientMimeType());
 
         try {
             $this->getFile()->move($this->getDirectory(), $file->getName());
