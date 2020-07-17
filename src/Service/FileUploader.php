@@ -23,57 +23,21 @@ class FileUploader
 
     public function store() : File
     {
-        DirectoryManager::create($this->getDirectory());
+        DirectoryManager::create($this->directory);
 
         $file = (new File())
-            ->setOriginalName($this->getFile()->getClientOriginalName())
-            ->setName($this->getServerName().'.'.$this->getFile()->guessClientExtension())
-            ->setUploadedPath($this->getDirectory())
+            ->setOriginalName($this->file->getClientOriginalName())
+            ->setName($this->serverName.'.'.$this->file->guessClientExtension())
+            ->setUploadedPath($this->directory)
             ->setUploadedAt(new \DateTime("now", new \DateTimeZone("UTC")))
-            ->setMimeType($this->getFile()->getClientMimeType());
+            ->setMimeType($this->file->getClientMimeType());
 
         try {
-            $this->getFile()->move($this->getDirectory(), $file->getName());
+            $this->file->move($this->directory, $file->getName());
         } catch (FileException $exception) {
             return $exception->getMessage();
         }
 
         return $file;
-    }
-
-    public function getDirectory() : string
-    {
-        return $this->directory;
-    }
-
-    public function setDirectory(string $directory) : self
-    {
-        $this->directory = $directory;
-
-        return $this;
-    }
-
-    public function getFile()
-    {
-        return $this->file;
-    }
-
-    public function setFile(UploadedFile $file): self
-    {
-        $this->file = $file;
-
-        return $this;
-    }
-
-    public function getServerName()
-    {
-        return $this->serverName;
-    }
-
-    public function setServerName($serverName): self
-    {
-        $this->serverName = $serverName;
-
-        return $this;
     }
 }
