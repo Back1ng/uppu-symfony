@@ -17,7 +17,7 @@ class FileController extends AbstractController
     /**
      * @Route("/", name="index")
      */
-    public function index(Request $request, Filesystem $filesystem, $uploadedDir)
+    public function index(Request $request, $uploadedDir)
     {
         $entityManager = $this->getDoctrine()->getManager();
 
@@ -32,11 +32,9 @@ class FileController extends AbstractController
                     return new Response("", 404);
                 }
 
-                $uploadedFile = (new FileUploader())
-                    ->setDirectory($uploadedDir.'/'.date('Y-m-d'))
-                    ->setFile($file)
-                    ->setServerName($this->generateUniqueName())
-                    ->store();
+                $directory = $uploadedDir.'/'.date('Y-m-d');
+
+                $uploadedFile = (new FileUploader($file, $directory, $this->generateUniqueName()))->store();
 
                 $entityManager->persist($uploadedFile);
                 $entityManager->flush();
@@ -49,6 +47,21 @@ class FileController extends AbstractController
             'form' => $form->createView()
         ]);
     }
+
+    /**
+     * @Route("/files", name="files")
+     */
+    public function files()
+    {
+        $files = $this->getDoctrine()
+            ->getRepository(File::class)
+            ->findLastFiles();
+
+        return $this->render('default/files.html.twig', [
+            'files' => $files
+        ]);
+    }
+
     /**
      * @Route("/file/{id}", name="show_file")
      */

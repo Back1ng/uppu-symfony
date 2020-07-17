@@ -8,26 +8,12 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class DirectoryManager
 {
-    private $directory;
-
-    public function create() : string
+    public static function create(string $path) : string
     {
         $filesystem = new Filesystem();
-        if (! $filesystem->exists($this->getDirectory())) {
-            $filesystem->mkdir($this->getDirectory());
+        if (! $filesystem->exists($path)) {
+            $filesystem->mkdir($path);
         }
-        return $this->getDirectory();
-    }
-
-    public function getDirectory()
-    {
-        return $this->directory;
-    }
-
-    public function setDirectory(string $directory) : self
-    {
-        $this->directory = $directory;
-
-        return $this;
+        return $path;
     }
 }

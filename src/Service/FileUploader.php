@@ -14,11 +14,16 @@ class FileUploader
     private $serverName;
     private $directory;
 
+    public function __construct(UploadedFile $file, string $directory, string $serverName)
+    {
+        $this->file = $file;
+        $this->directory = $directory;
+        $this->serverName = $serverName;
+    }
+
     public function store() : File
     {
-        (new DirectoryManager())
-            ->setDirectory($this->getDirectory())
-            ->create();
+        DirectoryManager::create($this->getDirectory());
 
         $file = (new File())
             ->setOriginalName($this->getFile()->getClientOriginalName())
