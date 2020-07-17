@@ -34,7 +34,7 @@ class FileController extends AbstractController
 
                 $directory = $uploadedDir.'/'.date('Y-m-d');
 
-                $uploadedFile = (new FileUploader($file, $directory, $this->generateUniqueName()))->store();
+                $uploadedFile = (new FileUploader($file, $directory, $this->generateUniqueName($directory)))->store();
 
                 $entityManager->persist($uploadedFile);
                 $entityManager->flush();
@@ -106,14 +106,17 @@ class FileController extends AbstractController
         ]);
     }
 
-    private function generateUniqueName() : string
+    private function generateUniqueName(string $directory) : string
     {
         $query = null;
         while([] !== $query) {
             $uniqueName = bin2hex(random_bytes(64));
             $query = $this->getDoctrine()
                 ->getRepository(File::class)
-                ->findBy(['name' => $uniqueName]);
+                ->findBy([
+                    'name' => $uniqueName,
+                    'uploaded_path' => $directory
+                ]);
         }
         return $uniqueName;
     }
