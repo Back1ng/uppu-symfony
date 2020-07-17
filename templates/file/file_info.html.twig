@@ -1,7 +1,7 @@
 {% if file.mimeType == "image/jpeg" %}
 <img class="card-img-top" src="/file/{{ file.id }}/content" alt="Card image cap">
 {% elseif file.mimeType == "video/mp4" or file.mimeType == "video/webm" or file.mimeType == "video/ogg" %}
-<video controls class="m-auto w-100">
+<video controls class="m-auto w-100" preload="none">
     <source src="/file/{{ file.id }}/content" type="{{ file.mimeType }}">
 </video>
 {% elseif file.mimeType == "audio/mpeg" or file.mimeType == "audio/ogg" or file.mimeType == "audio/webm" %}
