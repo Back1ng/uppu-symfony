@@ -42,6 +42,11 @@ class File
      */
     private $mime_type;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $size;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -103,6 +108,18 @@ class File
     public function setMimeType(string $mime_type): self
     {
         $this->mime_type = $mime_type;
+
+        return $this;
+    }
+
+    public function getSize(): ?string
+    {
+        return $this->size;
+    }
+
+    public function setSize(string $size): self
+    {
+        $this->size = $size;
 
         return $this;
     }

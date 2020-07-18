@@ -17,6 +17,9 @@ class FileController extends AbstractController
 {
     /**
      * @Route("/", name="index")
+     * @param Request $request
+     * @param $uploadedDir
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
     public function index(Request $request, $uploadedDir)
     {
@@ -68,20 +71,19 @@ class FileController extends AbstractController
      */
     public function show($id)
     {
-        if (! $fileEntity = $this->getDoctrine()->getRepository(File::class)->find($id)) {
+        if (! $file = $this->getDoctrine()->getRepository(File::class)->find($id)) {
             return new Response("", 404);
         }
 
         $finder = new Finder();
-        $finder->files()->name($fileEntity->getName())->in($fileEntity->getUploadedPath());
+        $finder->files()->name($file->getName())->in($file->getUploadedPath());
         if ($finder->hasResults()) {
-            foreach ($finder as $file) {
-                return $this->render('file/show.html.twig', [
-                    'file' => $fileEntity,
-                    'fileStorage' => $file,
-                    'size' => (new SizeWriter($file->getSize()))->write()
-                ]);
-            }
+            return $this->render('file/show.html.twig', [
+                'file' => $file,
+                'size' => (new SizeWriter(
+                    $file->getSize()
+                ))->write()
+            ]);
         }
         return new Response("", 404);
     }
@@ -104,7 +106,29 @@ class FileController extends AbstractController
         $file = $this->getDoctrine()->getRepository(File::class)->find($id);
 
         return new Response(file_get_contents($file->getUploadedPath().'/'.$file->getName()), 200, [
-            'Content-type' => $file->getMimeType()
+            'Content-type' => $file->getMimeType(),
+            'Content-length' => (int)$file->getSize(),
+            'Accept-Ranges' => 'bytes',
+        ]);
+    }
+
+    /**
+     * @Route("/files/search", name="file-search")
+     * @param Request $request
+     */
+    public function search(Request $request)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $files = $entityManager->getRepository(File::class)
+            ->createQueryBuilder('f')
+            ->where('f.original_name LIKE :original_name')
+            ->setParameter('original_name', "%".$request->get('search')."%")
+            ->orderBy('f.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+
+        return $this->render('file/files.html.twig', [
+            'files' => $files
         ]);
     }
 

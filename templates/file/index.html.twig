@@ -1,17 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Last Files{% endblock %}
+{% block title %}Main Page{% endblock %}
 
 {% block body %}
     <div class="bg-light mt-3 p-4 d-flex justify-content-center text-center">
-        {{ form_start(form) }}
+        {{ form_start(form, {'class': 'dropzone'}) }}
             {% if form.vars.errors|length %}
                 <div class="alert alert-danger">
                     {{ form_errors(form) }}
                 </div>
             {% endif %}
 
-            {{ form_row(form.file) }}
+            <div class="fallback">
+                {{ form_row(form.file) }}
+            </div>
+{#        TODO: setting form drag&drop #}
             {{ form_row(form.submit) }}
         {{ form_end(form) }}
     </div>

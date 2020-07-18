@@ -3,11 +3,14 @@
 {% block title %}File info{% endblock %}
 
 {% block body %}
+    <div class="my-4 text-center">
+        <h3>{{ file.originalName }}</h3>
+        <h5>{{ size }}</h5>
+        <a href="/file/{{ file.id }}/download">Download</a>
+    </div>
+
     <div class="w-50 mx-auto my-4">
         {% include 'file/file_info.html.twig' %}
 
     </div>
-    {{ file.originalName }}
-    {{ size }}
-    <a href="/file/{{ file.id }}/download">Download</a>
 {% endblock %}
