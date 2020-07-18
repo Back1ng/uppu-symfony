@@ -7,7 +7,6 @@ use App\Form\FileType;
 use App\Service\FileUploader;
 use App\Service\Writer\SizeWriter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,7 +37,10 @@ class FileController extends AbstractController
 
                 $directory = $uploadedDir.'/'.date('Y-m-d');
 
-                $uploadedFile = (new FileUploader($file, $directory, $this->generateUniqueName($directory)))->store();
+                $uploadedFile = (new FileUploader(
+                    $directory,
+                    $this->generateUniqueName($directory))
+                )->store($file);
 
                 $entityManager->persist($uploadedFile);
                 $entityManager->flush();
