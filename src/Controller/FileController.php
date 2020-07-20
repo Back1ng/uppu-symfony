@@ -86,7 +86,8 @@ class FileController extends AbstractController
                 'file' => $file,
                 'size' => (new SizeWriter(
                     $file->getSize()
-                ))->write()
+                ))->write(),
+                'comments' => $file->getComments()
             ]);
         }
         return new Response("", Response::HTTP_NOT_FOUND);

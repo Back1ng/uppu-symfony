@@ -1,0 +1,11 @@
+{% for comment in comments %}
+{#    TODO: design#}
+    <div class="card my-4">
+        <div class="card-header">
+            {{ comment.userToken }}
+        </div>
+        <div class="card-body">
+            {{ comment.message }}
+        </div>
+    </div>
+{% endfor %}

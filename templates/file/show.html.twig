@@ -9,8 +9,13 @@
         <a href="/file/{{ file.id }}/download">Download</a>
     </div>
 
-    <div class="w-50 mx-auto my-4">
+    <div class="mx-auto my-4 row">
+        <div class="col-md-1"></div>
         {% include 'file/file_info.html.twig' %}
+    </div>
 
+    <div class="w-75 mx-auto">
+        {% include 'comment/create-form.html.twig' %}
+        {% include 'comment/list.html.twig' %}
     </div>
 {% endblock %}
