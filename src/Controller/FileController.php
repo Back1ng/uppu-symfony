@@ -8,6 +8,7 @@ use App\Service\FileUploader;
 use App\Service\Writer\SizeWriter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,28 +23,28 @@ class FileController extends AbstractController
      */
     public function index(Request $request, $uploadedDir)
     {
-        $entityManager = $this->getDoctrine()->getManager();
+        $em = $this->getDoctrine()->getManager();
 
         $form = $this->createForm(FileType::class);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $files = $form->getData();
-
-            foreach ($files as $file) {
+            foreach ($form->getData() as $file) {
                 if (null === $file) {
-                    return new Response("", 404);
+                    return new Response("", Response::HTTP_NOT_FOUND);
                 }
 
                 $directory = $uploadedDir.'/'.date('Y-m-d');
 
-                $uploadedFile = (new FileUploader(
-                    $directory,
-                    $this->generateUniqueName($directory))
-                )->store($file);
+                $fu = new FileUploader($directory);
+                try {
+                    $uploadedFile = $fu->store($file, $this->generateUniqueName($directory));
+                } catch (FileException $e) {
+                    return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
+                }
 
-                $entityManager->persist($uploadedFile);
-                $entityManager->flush();
+                $em->persist($uploadedFile);
+                $em->flush();
 
                 return $this->redirectToRoute("show_file", ['id' => $uploadedFile->getId()]);
             }
@@ -74,7 +75,7 @@ class FileController extends AbstractController
     public function show($id)
     {
         if (! $file = $this->getDoctrine()->getRepository(File::class)->find($id)) {
-            return new Response("", 404);
+            return new Response("", Response::HTTP_NOT_FOUND);
         }
 
         $finder = new Finder();
@@ -87,7 +88,7 @@ class FileController extends AbstractController
                 ))->write()
             ]);
         }
-        return new Response("", 404);
+        return new Response("", Response::HTTP_NOT_FOUND);
     }
 
     /**
@@ -97,7 +98,10 @@ class FileController extends AbstractController
     {
         $fileEntity = $this->getDoctrine()->getRepository(File::class)->find($id);
 
-        return $this->file($fileEntity->getUploadedPath().'/'.$fileEntity->getName(), $fileEntity->getOriginalName());
+        return $this->file(
+            $fileEntity->getUploadedPath().'/'.$fileEntity->getName(),
+            $fileEntity->getOriginalName()
+        );
     }
 
     /**
@@ -107,11 +111,14 @@ class FileController extends AbstractController
     {
         $file = $this->getDoctrine()->getRepository(File::class)->find($id);
 
-        return new Response(file_get_contents($file->getUploadedPath().'/'.$file->getName()), 200, [
-            'Content-type' => $file->getMimeType(),
-            'Content-length' => (int)$file->getSize(),
-            'Accept-Ranges' => 'bytes',
-        ]);
+        return new Response(
+            file_get_contents($file->getUploadedPath().'/'.$file->getName()),
+            Response::HTTP_OK, [
+                'Content-type' => $file->getMimeType(),
+                'Content-length' => (int)$file->getSize(),
+                'Accept-Ranges' => 'bytes',
+            ]
+        );
     }
 
     /**
@@ -120,14 +127,9 @@ class FileController extends AbstractController
      */
     public function search(Request $request)
     {
-        $entityManager = $this->getDoctrine()->getManager();
-        $files = $entityManager->getRepository(File::class)
-            ->createQueryBuilder('f')
-            ->where('f.original_name LIKE :original_name')
-            ->setParameter('original_name', "%".$request->get('search')."%")
-            ->orderBy('f.id', 'DESC')
-            ->getQuery()
-            ->getResult();
+        $files = $this->getDoctrine()
+            ->getRepository(File::class)
+            ->findByOriginalName($request->get('search'));
 
         return $this->render('file/files.html.twig', [
             'files' => $files
@@ -138,11 +140,10 @@ class FileController extends AbstractController
     {
         $query = null;
         while([] !== $query) {
-            $uniqueName = bin2hex(random_bytes(64));
             $query = $this->getDoctrine()
                 ->getRepository(File::class)
                 ->findBy([
-                    'name' => $uniqueName,
+                    'name' => $uniqueName = bin2hex(random_bytes(64)),
                     'uploaded_path' => $directory
                 ]);
         }

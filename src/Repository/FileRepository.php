@@ -56,4 +56,14 @@ class FileRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
+
+    public function findByOriginalName(string $originalName, string $orderType = "DESC")
+    {
+        return $this->createQueryBuilder('f')
+            ->where('f.original_name LIKE :original_name')
+            ->setParameter('original_name', "%{$originalName}%")
+            ->orderBy('f.id', $orderType)
+            ->getQuery()
+            ->getResult();
+    }
 }
