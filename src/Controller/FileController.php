@@ -7,6 +7,7 @@ use App\Form\FileType;
 use App\Service\FileUploader;
 use App\Service\Writer\SizeWriter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
@@ -111,9 +112,14 @@ class FileController extends AbstractController
     {
         $file = $this->getDoctrine()->getRepository(File::class)->find($id);
 
+        $fileSystem = new Filesystem();
+        if (! $fileSystem->exists($name = $file->getUploadedPath().'/'.$file->getName())) {
+            return new Response("", Response::HTTP_NOT_FOUND);
+        }
         return new Response(
-            file_get_contents($file->getUploadedPath().'/'.$file->getName()),
-            Response::HTTP_OK, [
+            file_get_contents($name),
+            Response::HTTP_OK,
+            [
                 'Content-type' => $file->getMimeType(),
                 'Content-length' => (int)$file->getSize(),
                 'Accept-Ranges' => 'bytes',
