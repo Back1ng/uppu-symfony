@@ -7,7 +7,9 @@
         </video>
     </div>
 {% elseif file.mimeType == "audio/mpeg" or file.mimeType == "audio/ogg" or file.mimeType == "audio/webm" %}
-    <audio buffered controls class="m-auto w-auto" preload=auto>
-        <source src="/file/{{ file.id }}/content" type='{{ file.mimeType }}'>
-    </audio>
+    <div class="col-md-10 col-12">
+        <audio id="player" buffered controls preload=auto>
+            <source src="/file/{{ file.id }}/content" type='{{ file.mimeType }}'>
+        </audio>
+    </div>
 {% endif %}
