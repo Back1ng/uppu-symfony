@@ -1,7 +1,6 @@
-<form method="POST" class="form-group" action="/file/{{ file.id }}/comment/store">
+<form method="POST" class="form-group mx-3" action="/file/{{ file.id }}/comment/store">
     <div class="row">
-        <textarea type="text" class="form-control col-10" name="content" placeholder="Comment"></textarea>
-
-        <input type="submit" class="btn btn-primary col-2" value="Comment">
+        <textarea type="text" id="textarea" class="form-control col-10" name="message" placeholder="Comment"></textarea>
+        <input type="submit" class="btn btn-primary col-2" value="Send">
     </div>
 </form>

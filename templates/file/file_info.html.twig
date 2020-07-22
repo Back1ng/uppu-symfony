@@ -1,13 +1,13 @@
 {% if file.mimeType == "image/jpeg" or file.mimeType == "image/png" %}
-    <img class="card-img-top col-12 col-md-10" height="480" width="640" src="/file/{{ file.id }}/content" alt="file.originalName">
+    <img class="card-img-top col-12 col-md-10" src="/file/{{ file.id }}/content" alt="file.originalName">
 {% elseif file.mimeType == "video/mp4" or file.mimeType == "video/webm" or file.mimeType == "video/ogg" %}
     <div class="col-md-10 col-12">
-        <video id="player" buffered controls playsinline class="mx-auto" preload=auto>
+        <video id="player" buffered controls playsinline class="w-100 mx-auto" preload=auto>
             <source src="/file/{{ file.id }}/content" type="{{ file.mimeType }}">
         </video>
     </div>
 {% elseif file.mimeType == "audio/mpeg" or file.mimeType == "audio/ogg" or file.mimeType == "audio/webm" %}
-    <audio id="player" buffered controls class="m-auto w-auto" preload=auto>
+    <audio buffered controls class="m-auto w-auto" preload=auto>
         <source src="/file/{{ file.id }}/content" type='{{ file.mimeType }}'>
     </audio>
 {% endif %}

@@ -3,9 +3,23 @@
     <div class="card my-4">
         <div class="card-header">
             {{ comment.userToken }}
+            <div class="float-right text-primary">
+                <a id="#{{ comment.id }}" href="#textarea" onclick="addIdToTextarea({{ comment.id }})" style="cursor: pointer;">
+                    #{{ comment.id }}{% if comment.commentParentId != null %}
+                    -> <a href="##{{ comment.commentParentId }}">#{{ comment.commentParentId }}</a>
+                    {% endif %}
+                </a>
+            </div>
         </div>
         <div class="card-body">
             {{ comment.message }}
         </div>
     </div>
 {% endfor %}
+
+<script>
+    function addIdToTextarea(id) {
+        var textarea = document.getElementById('textarea');
+        textarea.innerHTML = "#"+id+" ";
+    }
+</script>

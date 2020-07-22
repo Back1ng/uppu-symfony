@@ -13,7 +13,7 @@ class Comment
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint")
      */
     private $id;
 
@@ -32,6 +32,11 @@ class Comment
      * @ORM\JoinColumn(nullable=false)
      */
     private $file;
+
+    /**
+     * @ORM\Column(type="bigint", nullable=true)
+     */
+    private $comment_parent_id;
 
     public function getId(): ?int
     {
@@ -70,6 +75,18 @@ class Comment
     public function setFile(?File $file): self
     {
         $this->file = $file;
+
+        return $this;
+    }
+
+    public function getCommentParentId(): ?int
+    {
+        return $this->comment_parent_id;
+    }
+
+    public function setCommentParentId(int $comment_parent_id): self
+    {
+        $this->comment_parent_id = $comment_parent_id;
 
         return $this;
     }
