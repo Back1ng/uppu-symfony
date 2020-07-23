@@ -38,18 +38,4 @@ class FileUploader
         $file->move($this->directory, $nameOnServer);
         return $fileEntity;
     }
-
-    // TODO try to set optimal convert, probably need rabbitmq or smth another
-//    private function sendToConvert($name, $extension)
-//    {
-//        if($extension === "webm") {
-//            return VideoConverter::convert(
-//                $this->directory,
-//                $name,
-//                $extension
-//            );
-//        } else {
-//            return $name.".".$extension;
-//        }
-//    }
 }

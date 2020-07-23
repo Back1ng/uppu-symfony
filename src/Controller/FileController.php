@@ -6,6 +6,7 @@ use App\Entity\File;
 use App\Form\FileType;
 use App\Service\FileUploader;
 use App\Service\Writer\SizeWriter;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
@@ -19,13 +20,13 @@ class FileController extends AbstractController
     /**
      * @Route("/", name="index")
      * @param Request $request
+     * @param EntityManagerInterface $em
      * @param $uploadedDir
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @throws \Exception
      */
-    public function index(Request $request, $uploadedDir)
+    public function index(Request $request, EntityManagerInterface $em, $uploadedDir)
     {
-        $em = $this->getDoctrine()->getManager();
-
         $form = $this->createForm(FileType::class);
 
         $form->handleRequest($request);
@@ -84,9 +85,7 @@ class FileController extends AbstractController
         if ($finder->hasResults()) {
             return $this->render('file/show.html.twig', [
                 'file' => $file,
-                'size' => (new SizeWriter(
-                    $file->getSize()
-                ))->write(),
+                'size' => (new SizeWriter($file->getSize()))->write(),
                 'comments' => $file->getComments()
             ]);
         }
