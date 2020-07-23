@@ -31,10 +31,8 @@ class CommentController extends AbstractController
             ->setUserToken(hash("sha256",$request->getClientIp() . $request->headers->get('User-Agent')));
 
         $parsedID = (int)$parse->getId();
-        if (! empty($parsedID)) {
-            if(null !== $em->getRepository(Comment::class)->find($parsedID)) {
-                $comment->setCommentParentId($parsedID);
-            }
+        if($parsedID && null !== $em->getRepository(Comment::class)->find($parsedID)) {
+            $comment->setCommentParentId($parsedID);
         }
 
         $em->persist($comment);

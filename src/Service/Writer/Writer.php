@@ -6,5 +6,5 @@ namespace App\Service\Writer;
 
 interface Writer
 {
-    public function write();
+    public function write($string);
 }

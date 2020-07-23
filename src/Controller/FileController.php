@@ -81,11 +81,13 @@ class FileController extends AbstractController
         }
 
         $finder = new Finder();
+        $sizeWriter = new SizeWriter();
+
         $finder->files()->name($file->getName())->in($file->getUploadedPath());
         if ($finder->hasResults()) {
             return $this->render('file/show.html.twig', [
                 'file' => $file,
-                'size' => (new SizeWriter($file->getSize()))->write(),
+                'size' => $sizeWriter->write($file->getSize()),
                 'comments' => $file->getComments()
             ]);
         }

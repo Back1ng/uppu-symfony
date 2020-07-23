@@ -15,11 +15,6 @@ class SizeWriter implements Writer
 
     private $iterations = 0;
 
-    public function __construct(int $size)
-    {
-        $this->size = $size;
-    }
-
     private function convertToOptimalSize() : self
     {
         while($this->size > 1024) {
@@ -43,8 +38,10 @@ class SizeWriter implements Writer
         return $this;
     }
 
-    public function write()
+    public function write($size)
     {
+        $this->size = (int)$size;
+
         $this->convertToOptimalSize();
 
         return round($this->size, 2).$this->unit;
