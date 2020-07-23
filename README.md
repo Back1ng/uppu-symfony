@@ -8,7 +8,8 @@ Set public directory as public<br>
 Configure database connection & app environment in <code>.env</code> file in core directory.<br>
 
 <code>APP_ENV=dev</code><br>
-<code>DATABASE_URL=mysql://user:password@127.0.0.1:3306/uppu</code>
+<code>DATABASE_URL=mysql://user:password@127.0.0.1:3306/uppu</code><br>
 
+Create database: <code>php bin/console doctrine:database:create</code><br>
 Create migration: <code>php bin/console make:migration</code><br>
 Run this migration: <code>php bin/console doctrine:migrations:migrate</code>
