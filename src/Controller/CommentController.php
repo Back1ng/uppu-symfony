@@ -16,13 +16,15 @@ class CommentController extends AbstractController
     /**
      * @Route("/file/{id}/comment/store", name="comment-store")
      */
-    public function store(Request $request, EntityManagerInterface $em, string $id)
+    public function store(Request $request, EntityManagerInterface $em, $id)
     {
         try {
-            $parse = (new CommentParser())
-                ->parse($request->get('message'));
+            $message = $request->get('message');
+            $parse = (new CommentParser())->parse($message);
         } catch (\Exception $e) {
-            return $this->redirectToRoute("show_file", ['id' => $id]);
+            return $this->redirectToRoute("show_file", [
+                'id' => $id
+            ]);
         }
 
         $comment = (new Comment())

@@ -15,6 +15,8 @@ class FileUploader
     public function __construct(string $directory)
     {
         $this->directory = $directory;
+
+        DirectoryManager::create($this->directory);
     }
 
     /**
@@ -25,15 +27,15 @@ class FileUploader
      */
     public function store(UploadedFile $file, string $name) : File
     {
-        DirectoryManager::create($this->directory);
+        $nameOnServer = "{$name}.".$file->guessClientExtension();
 
         $fileEntity = (new File())
             ->setOriginalName($file->getClientOriginalName())
-            ->setName($nameOnServer = "{$name}.".$file->guessClientExtension())
+            ->setName        ($nameOnServer)
             ->setUploadedPath($this->directory)
-            ->setUploadedAt(new \DateTime("now", new \DateTimeZone("UTC")))
-            ->setMimeType($file->getClientMimeType())
-            ->setSize($file->getSize());
+            ->setUploadedAt  (new \DateTime("now", new \DateTimeZone("UTC")))
+            ->setMimeType    ($file->getClientMimeType())
+            ->setSize        ($file->getSize());
 
         $file->move($this->directory, $nameOnServer);
         return $fileEntity;

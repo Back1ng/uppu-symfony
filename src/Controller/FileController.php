@@ -32,7 +32,7 @@ class FileController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             foreach ($form->getData() as $file) {
-                if (null === $file) {
+                if (! $file) {
                     return new Response("", Response::HTTP_NOT_FOUND);
                 }
 
@@ -73,6 +73,8 @@ class FileController extends AbstractController
 
     /**
      * @Route("/file/{id}", name="show_file")
+     * @param $id
+     * @return Response
      */
     public function show($id)
     {
@@ -86,8 +88,8 @@ class FileController extends AbstractController
         $finder->files()->name($file->getName())->in($file->getUploadedPath());
         if ($finder->hasResults()) {
             return $this->render('file/show.html.twig', [
-                'file' => $file,
-                'size' => $sizeWriter->write($file->getSize()),
+                'file'     => $file,
+                'size'     => $sizeWriter->write($file->getSize()),
                 'comments' => $file->getComments()
             ]);
         }
@@ -95,31 +97,37 @@ class FileController extends AbstractController
     }
 
     /**
-     *@Route("/file/{id}/download", name="file-download")
+     * @Route("/file/{id}/download", name="file-download")
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
      */
     public function download($id)
     {
         $fileEntity = $this->getDoctrine()->getRepository(File::class)->find($id);
 
-        return $this->file(
-            $fileEntity->getUploadedPath().'/'.$fileEntity->getName(),
-            $fileEntity->getOriginalName()
-        );
+        $originalFilename = $fileEntity->getUploadedPath().'/'.$fileEntity->getName();
+        $downloadedName   = $fileEntity->getOriginalName();
+
+        return $this->file($originalFilename, $downloadedName);
     }
 
     /**
      * @Route("/file/{id}/content", name="file-get-content")
+     * @param $id
+     * @return Response
      */
     public function content($id)
     {
         $file = $this->getDoctrine()->getRepository(File::class)->find($id);
 
         $fileSystem = new Filesystem();
-        if (! $fileSystem->exists($name = $file->getUploadedPath().'/'.$file->getName())) {
+        $fileName = $file->getUploadedPath().'/'.$file->getName();
+
+        if (! $fileSystem->exists($fileName)) {
             return new Response("", Response::HTTP_NOT_FOUND);
         }
         return new Response(
-            file_get_contents($name),
+            file_get_contents($fileName),
             Response::HTTP_OK,
             [
                 'Content-type' => $file->getMimeType(),
@@ -148,13 +156,15 @@ class FileController extends AbstractController
     {
         $query = null;
         while([] !== $query) {
+            $name = bin2hex(random_bytes(64));
+
             $query = $this->getDoctrine()
                 ->getRepository(File::class)
                 ->findBy([
-                    'name' => $uniqueName = bin2hex(random_bytes(64)),
+                    'name' => $name,
                     'uploaded_path' => $directory
                 ]);
         }
-        return $uniqueName;
+        return $name;
     }
 }

@@ -10,7 +10,7 @@ class CommentParser implements Parser
 
     private $message = "";
 
-    public function parse($message) : self
+    public function parse(string $message) : self
     {
         if($message == "") {
             throw new \Exception("Message is empty");
@@ -23,7 +23,7 @@ class CommentParser implements Parser
             return $this;
         }
 
-        $this->id = trim(explode("#", $matches[0])[1]);
+        $this->id      = trim(explode("#", $matches[0])[1]);
         $this->message = str_replace($matches[0] . ' ', "", $message);
 
         return $this;
