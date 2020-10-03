@@ -26,6 +26,7 @@
         "twig/twig": "^2.12|^3.0"
     },
     "require-dev": {
+        "phpmd/phpmd": "^2.9",
         "symfony/phpunit-bridge": "^5.1"
     },
     "config": {
