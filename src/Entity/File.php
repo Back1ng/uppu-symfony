@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\FileRepository;
+use App\Service\Writer\SizeWriter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -165,5 +166,11 @@ class File
         }
 
         return $this;
+    }
+
+    public function getConvertedSize(): string
+    {
+        $writer = new SizeWriter();
+        return $writer->write($this->getSize());
     }
 }
