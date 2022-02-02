@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -98,15 +99,21 @@ class FileController extends AbstractController
 
     /**
      * @Route("/file/{id}/download", name="file-download")
+     * @param EntityManagerInterface $em
      * @param $id
-     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     * @return BinaryFileResponse
      */
-    public function download($id)
+    public function download(EntityManagerInterface $em, $id)
     {
         $fileEntity = $this->getDoctrine()->getRepository(File::class)->find($id);
 
-        $originalFilename = $fileEntity->getUploadedPath().'/'.$fileEntity->getName();
+        $originalFilename = $fileEntity->getUploadedPath() . '/' . $fileEntity->getName();
         $downloadedName   = $fileEntity->getOriginalName();
+
+        $fileEntity->setCountDownloads($fileEntity->getCountDownloads() + 1);
+
+        $em->persist($fileEntity);
+        $em->flush();
 
         return $this->file($originalFilename, $downloadedName);
     }

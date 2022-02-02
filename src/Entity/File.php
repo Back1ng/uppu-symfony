@@ -51,6 +51,11 @@ class File
     private $size;
 
     /**
+     * @ORM\Column(type="integer", length=11)
+     */
+    private $count_downloads = 0;
+
+    /**
      * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="file", orphanRemoval=true)
      */
     private $comments;
@@ -133,6 +138,18 @@ class File
     public function setSize(string $size): self
     {
         $this->size = $size;
+
+        return $this;
+    }
+
+    public function getCountDownloads(): ?int
+    {
+        return $this->count_downloads;
+    }
+
+    public function setCountDownloads(string $countDownloads): self
+    {
+        $this->count_downloads = $countDownloads;
 
         return $this;
     }
