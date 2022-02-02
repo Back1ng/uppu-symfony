@@ -3,15 +3,19 @@
 {% block title %}Last Files{% endblock %}
 
 {% block body %}
-    {% for file in files %}
-        <div class="row">
-            <div class="card my-4 mx-auto col-10 col-lg-8 text-center shadow">
-                {#            {% include 'file/file_info.html.twig' %}#}
-                <div class="card-body">
-                    <h5 class="card-title">{{ file.originalName }}</h5>
-                    <a href="/file/{{ file.id }}" class="btn btn-primary">Show</a>
+    <div class="container">
+        {% for file in files %}
+            <div class="border mt-2" style="height: 43px;">
+                <div class="d-flex">
+                    <div class="p-2">
+                        <a href="/file/{{ file.id }}">{{ file.originalName }}</a>
+                    </div>
+
+                    <div class="ml-auto p-2">
+                        {{ file.uploadedAt.format('d/m/Y H:i:s') }}
+                    </div>
                 </div>
             </div>
-        </div>
-    {% endfor %}
+        {% endfor %}
+    </div>
 {% endblock %}
