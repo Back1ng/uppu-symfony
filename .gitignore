@@ -4,10 +4,12 @@
 /.env.local.php
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
-/public/bundles/
+/html/bundles/
 /var/
 /vendor/
 /.idea
+/db-data
+/uploads
 ./migrations
 ###< symfony/framework-bundle ###
 

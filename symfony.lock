@@ -132,7 +132,7 @@
             "ref": "71599f5b0fdeeeec0fb90e9b17c85e6f5e1350c1"
         },
         "files": [
-            "./public/.htaccess"
+            "./html/.htaccess"
         ]
     },
     "symfony/asset": {
@@ -215,7 +215,7 @@
             "./config/packages/test/framework.yaml",
             "./config/routes/dev/framework.yaml",
             "./config/services.yaml",
-            "./public/index.php",
+            "./html/index.php",
             "./src/Controller/.gitignore",
             "./src/Kernel.php"
         ]

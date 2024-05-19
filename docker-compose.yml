@@ -1,0 +1,45 @@
+networks:
+  uppu: # <- change this for COMPOSE_PROJECT_NAME env variable value
+    driver: bridge
+
+services:
+  db:
+    image: mysql:5.7
+    restart: always
+    ports:
+      - '127.0.0.1:3306:3306'
+    networks:
+      - uppu
+    environment:
+      MYSQL_ROOT_PASSWORD: "password"
+      MYSQL_DATABASE: "uppu"
+      MYSQL_USER: "user"
+      MYSQL_PASSWORD: "password"
+    volumes:
+      - ./db-data/db-main:/var/lib/mysql
+  app:
+    container_name: uppu-symfony
+    restart: always
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+    ports:
+      - 80:80
+    depends_on:
+      - db
+    networks:
+      - uppu
+    volumes:
+      - .:/var/www
+#  apache:
+#    container_name: uppu-httpd
+#    restart: always
+#    build:
+#      context: .
+#      dockerfile: docker/httpd/Dockerfile
+#    ports:
+#      - 80:80
+#    networks:
+#      - uppu
+#    volumes:
+#      - .:/usr/local/apache2/htdocs/
